@@ -10,17 +10,16 @@ public class Controls : MonoBehaviour {
 
     public float turningSpeed = 200;
     float time = 0;
-    public Rigidbody rb;
 
     void start() {
-        rb = GetComponent<Rigidbody>();
         movementSpeed = startSpeed;
     }
     void Update() {
-        float horizontal = Input.GetAxis("Horizontal") * turningSpeed * Time.deltaTime;
+        float horizontal = Input.GetAxis("Horizontal0") * turningSpeed * Time.deltaTime;
+        Debug.Log("horz:" + horizontal);
         transform.Rotate(0, horizontal, 0);
 
-        float vertical = Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime;
+        float vertical = Input.GetAxis("Vertical0") * movementSpeed * Time.deltaTime;
         if ( Input.GetKey(KeyCode.W) ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
