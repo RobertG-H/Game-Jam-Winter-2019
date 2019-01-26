@@ -11,10 +11,14 @@ public class Controls : MonoBehaviour {
 	public Rigidbody rb;
 	public int playerNumber;
 	public float impulsePower = 15;
+	public float biteCooldown = 1.0f;
+	public float dashCooldown = 1.5f;
 
     private bool grounded = true;
+	private bool biting = false;
 
     private Vector3 Dash;
+	private Vector3 Bite;
     private bool blocked = false;
     private bool waitActive = false;
     void Start() {
@@ -47,9 +51,14 @@ public class Controls : MonoBehaviour {
         }
 
         bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
-		if (fire && playerNum == 0) { // should be !=, its 0 for testing
+		if (fire) {
 			if (!waitActive) {
-				StartCoroutine(Wait());
+				if (playerNum != 0) {
+					StartCoroutine(DashEvent());
+				}
+				else {
+					StartCoroutine(BiteEvent());
+				}
 			}
 		}
         
@@ -65,15 +74,35 @@ public class Controls : MonoBehaviour {
         }
     }
 	
-	IEnumerator Wait()
+	void OnCollisionEnter(Collision col) {
+		if ( col.gameObject.tag == "SmallFish" && biting) {
+			biting = false; // death event
+		}
+	}
+	
+	IEnumerator DashEvent()
 	{
         Dash = transform.forward;
         Dash = impulsePower * Dash;
         rb.AddForce(Dash, ForceMode.Impulse);
 		waitActive = true;
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(dashCooldown);
 		waitActive = false;
 
+	}
+	
+	IEnumerator BiteEvent()
+	{
+        Bite = transform.forward;
+        Bite = impulsePower * Bite;
+        rb.AddForce(Bite, ForceMode.Impulse);
+		waitActive = true;
+		biting = true;
+		movementSpeed = 0;
+		yield return new WaitForSeconds(biteCooldown);
+		waitActive = false;
+		biting = false;
+		movementSpeed = startSpeed;
 	}
 }
 
