@@ -7,10 +7,13 @@ public class Camera : MonoBehaviour
     public GameObject target;
     float x_offset;
     float z_offset;
+    Vector3 offset;
     // Start is called before the first frame update
     void Start()
     {
         x_offset = target.transform.position.x - transform.position.x;
+        z_offset = target.transform.position.z - transform.position.z;
+        offset   = new Vector3(x_offset, transform.position.y, z_offset);
     }
 
     // Update is called once per frame
@@ -23,15 +26,10 @@ public class Camera : MonoBehaviour
         float desiredAngle = target.transform.eulerAngles.y;
         Quaternion rotation = Quaternion.Euler(0, desiredAngle, 0);
 
-        x_offset = target.transform.position.x - (rotation * new Vector3(x_offset,0,0)).x;
-        z_offset = target.transform.position.z - (rotation * new Vector3(0,0,z_offset)).z;
-        Vector3 camera_delta = new Vector3(x_offset, transform.position.y, z_offset);
-
-        Debug.Log(camera_delta);
-        Debug.Log();
+        Vector3 camera_delta = target.transform.position - (rotation * offset);
+        camera_delta = new Vector3(camera_delta.x, transform.position.y, camera_delta.z);
 
         transform.position = camera_delta;
-        //transform.position = new Vector3(target.transform.position.x - (rotation.x * x_offset), transform.position.y, 0);
         transform.LookAt(target.transform);
     }
 }
