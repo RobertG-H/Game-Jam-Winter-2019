@@ -29,6 +29,7 @@ public class Camera : MonoBehaviour
 
         Debug.Log(camera_delta);
         Debug.Log();
+
         transform.position = camera_delta;
         //transform.position = new Vector3(target.transform.position.x - (rotation.x * x_offset), transform.position.y, 0);
         transform.LookAt(target.transform);
