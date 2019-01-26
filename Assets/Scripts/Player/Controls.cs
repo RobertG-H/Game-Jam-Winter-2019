@@ -10,7 +10,7 @@ public class Controls : MonoBehaviour {
 	public float turningSpeed = 200;
 	public Rigidbody rb;
 	public int playerNumber;
-	public float impulsePower = 6;
+	public float impulsePower = 15;
 
     private bool grounded = true;
 
@@ -21,7 +21,7 @@ public class Controls : MonoBehaviour {
         movementSpeed = startSpeed;
     }
     void Update() {
-		int playerNum = playerNumber - 1;
+		int playerNum = (int)playerNumber - 1;
         float horizontal = Input.GetAxis("Horizontal" + playerNum.ToString()) * turningSpeed * Time.deltaTime;
         transform.Rotate(0, horizontal, 0);
 
@@ -44,21 +44,12 @@ public class Controls : MonoBehaviour {
             else {
                 rb.AddForce(new Vector3(0,12,1), ForceMode.Impulse);
             }
-                
-
-        } else if ( !grounded ) {
-
         }
 
         bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
 		if (fire && playerNum == 0) { // should be !=, its 0 for testing
 			if (!waitActive) {
 				StartCoroutine(Wait());
-			}
-			if (!blocked) {
-				Dash = transform.forward;
-				Dash = impulsePower * Dash;
-				rb.AddForce(Dash, ForceMode.Impulse);
 			}
 		}
         
@@ -76,9 +67,11 @@ public class Controls : MonoBehaviour {
 	
 	IEnumerator Wait()
 	{
+        Dash = transform.forward;
+        Dash = impulsePower * Dash;
+        rb.AddForce(Dash, ForceMode.Impulse);
 		waitActive = true;
 		yield return new WaitForSeconds(1.5f);
-		blocked = false;
 		waitActive = false;
 
 	}
