@@ -11,14 +11,17 @@ public class Controls : MonoBehaviour {
     public float turningSpeed = 200;
     float time = 0;
 
+    public Animator animator;
+
     void start() {
         movementSpeed = startSpeed;
+        animator =  GetComponent<Animator>();
     }
     void Update() {
         float horizontal = Input.GetAxis("Horizontal0") * turningSpeed * Time.deltaTime;
         Debug.Log("horz:" + horizontal);
         transform.Rotate(0, horizontal, 0);
-
+        animator.SetFloat("Speed", 0);
         float vertical = Input.GetAxis("Vertical0") * movementSpeed * Time.deltaTime;
         if ( Input.GetKey(KeyCode.W) ) {
             if ( movementSpeed < MAX_SPEED ) {
