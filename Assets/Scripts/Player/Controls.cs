@@ -7,20 +7,25 @@ public class Controls : MonoBehaviour {
     public float movementSpeed;
     public float MAX_SPEED = 20;
     public float acceleration = 0.1f;
-
-    public float turningSpeed = 200;
+	public float turningSpeed = 200;
+	public Rigidbody rb;
+	public int playerNumber;
+	public float impulsePower = 6;
 
     private bool grounded = true;
-    float time = 0;
-    public Rigidbody rb;
-    void start() {
+
+    private Vector3 Dash;
+    private bool blocked = false;
+    private bool waitActive = false;
+    void Start() {
         movementSpeed = startSpeed;
-        rb = GetComponent<Rigidbody>();
     }
     void Update() {
-        float horizontal = Input.GetAxis("Horizontal0") * turningSpeed * Time.deltaTime;
+		int playerNum = playerNumber - 1;
+        float horizontal = Input.GetAxis("Horizontal" + playerNum.ToString()) * turningSpeed * Time.deltaTime;
         transform.Rotate(0, horizontal, 0);
-        float vertical = Input.GetAxis("Vertical0") * movementSpeed * Time.deltaTime;
+
+        float vertical = Input.GetAxis("Vertical" + playerNum.ToString()) * movementSpeed * Time.deltaTime;
         if ( Input.GetKey(KeyCode.W) ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
@@ -33,7 +38,7 @@ public class Controls : MonoBehaviour {
             movementSpeed = startSpeed;
         }
 
-        if ( Input.GetKeyDown(KeyCode.Space) && grounded ) {
+        if ( Input.GetKeyDown(KeyCode.V) && grounded ) {
             if ( rb.velocity.x == 0 )
                 rb.AddForce(new Vector3(0,10,0), ForceMode.Impulse);
             else {
@@ -44,6 +49,18 @@ public class Controls : MonoBehaviour {
         } else if ( !grounded ) {
 
         }
+
+        bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
+		if (fire && playerNum == 0) { // should be !=, its 0 for testing
+			if (!waitActive) {
+				StartCoroutine(Wait());
+			}
+			if (!blocked) {
+				Dash = transform.forward;
+				Dash = impulsePower * Dash;
+				rb.AddForce(Dash, ForceMode.Impulse);
+			}
+		}
         
     }   
     void OnCollisionExit(Collision col ) {
@@ -56,9 +73,14 @@ public class Controls : MonoBehaviour {
             grounded = true;
         }
     }
-    void FixedUpdate()
-    {
-        
-    }
+	
+	IEnumerator Wait()
+	{
+		waitActive = true;
+		yield return new WaitForSeconds(1.5f);
+		blocked = false;
+		waitActive = false;
 
+	}
 }
+
