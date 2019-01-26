@@ -26,6 +26,10 @@ public class Camera : MonoBehaviour
         x_offset = target.transform.position.x - (rotation * new Vector3(x_offset,0,0)).x;
         z_offset = target.transform.position.z - (rotation * new Vector3(0,0,z_offset)).z;
         Vector3 camera_delta = new Vector3(x_offset, transform.position.y, z_offset);
+
+        Debug.Log(camera_delta);
+        Debug.Log();
+
         transform.position = camera_delta;
         //transform.position = new Vector3(target.transform.position.x - (rotation.x * x_offset), transform.position.y, 0);
         transform.LookAt(target.transform);
