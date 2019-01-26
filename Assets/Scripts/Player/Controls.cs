@@ -7,6 +7,8 @@ public class Controls : MonoBehaviour {
     public float movementSpeed;
     public float MAX_SPEED = 20;
     public float acceleration = 0.1f;
+	[SerializeField]
+	private int playerNumber;
 
     public float turningSpeed = 200;
     float time = 0;
@@ -15,11 +17,12 @@ public class Controls : MonoBehaviour {
         movementSpeed = startSpeed;
     }
     void Update() {
-        float horizontal = Input.GetAxis("Horizontal0") * turningSpeed * Time.deltaTime;
+		int playerNum = playerNumber - 1;
+        float horizontal = Input.GetAxis("Horizontal" + playerNum.ToString()) * turningSpeed * Time.deltaTime;
         Debug.Log("horz:" + horizontal);
         transform.Rotate(0, horizontal, 0);
 
-        float vertical = Input.GetAxis("Vertical0") * movementSpeed * Time.deltaTime;
+        float vertical = Input.GetAxis("Vertical" + playerNum.ToString()) * movementSpeed * Time.deltaTime;
         if ( Input.GetKey(KeyCode.W) ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
@@ -32,8 +35,10 @@ public class Controls : MonoBehaviour {
         if ( Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) ){
             movementSpeed = startSpeed;
         }
-        
-    }   
+		
+		bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
+    }
+   
     void FixedUpdate()
     {
         
