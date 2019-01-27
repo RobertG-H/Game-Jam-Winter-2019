@@ -11,6 +11,7 @@ public class SharkyBoost : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        
     }
 
     // Update is called once per frame
@@ -18,9 +19,9 @@ public class SharkyBoost : MonoBehaviour
     {
 
         if (Input.GetKeyUp(KeyCode.W)){
-            Debug.Log("is working?");
-            rb.AddForce(transform.forward * 20, ForceMode.Impulse);
+            rb.AddForce(transform.forward * 30, ForceMode.Impulse);
         }
         
     }
+
 }

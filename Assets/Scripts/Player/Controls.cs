@@ -10,7 +10,7 @@ public class Controls : MonoBehaviour {
 	public float turningSpeed = 200;
 	public Rigidbody rb;
 	public int playerNumber;
-	public float impulsePower = 15;
+	public float impulsePower = 25;
 	public float biteCooldown = 1.0f;
 	public float dashCooldown = 1.5f;
 
@@ -79,8 +79,7 @@ public class Controls : MonoBehaviour {
 			biting = false; // death event
 		}
 	}
-	
-	IEnumerator DashEvent()
+    IEnumerator DashEvent()
 	{
         Dash = transform.forward;
         Dash = impulsePower * Dash;
