@@ -8,9 +8,17 @@ public class Controls : MonoBehaviour {
     public float MAX_SPEED = 20;
     public float acceleration = 0.1f;
 	public float turningSpeed = 200;
+    public bool dead = false;
 	public Rigidbody rb;
+    public AudioSource audioSource;
+    public AudioSource sfxSource;
+    public AudioClip deathSound;
+    public AudioClip stepSound;
+    public AudioClip dashSound;
+    public AudioClip reviveSound;
+    public bool steppingSound = false;
 
-	public int playerNumber;
+    public int playerNumber;
 	public float dashCooldown = 1.5f;
 
     private bool grounded = true;
@@ -23,13 +31,18 @@ public class Controls : MonoBehaviour {
     private DeathController deathController;
 
     private Animator anim;
+
+
     void Start() {
         movementSpeed = startSpeed;
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody> ();
-        
+       // AudioSource [] audioSources = GetComponents<AudioSource> ();
+        //audioSource = audioSources [0];
+       //sfxSource = audioSources [1];
 
-        if(gameObject.tag == "SmallFish") {
+
+        if (gameObject.tag == "SmallFish") {
             deathController = GetComponent<DeathController> ();
         }
     }
@@ -49,6 +62,9 @@ public class Controls : MonoBehaviour {
             }
             transform.Translate(new Vector3(0, 0, vertical));
             anim.SetFloat ("speedPercent", vertical*10f);
+            if(!steppingSound) {
+                StartCoroutine (steppingSoundEvent ());
+            }
         }
         else if (vertical < -0.1f) {
             transform.Translate(new Vector3(0,0, vertical));
@@ -82,7 +98,21 @@ public class Controls : MonoBehaviour {
         if(gameObject.tag != "SmallFish") {
             return true;
         }
-        anim.SetBool ("dead", deathController.isDead);  
+        anim.SetBool ("dead", deathController.isDead);
+        if(deathController.isDead && !dead) {
+            dead = true;
+            audioSource.volume = 0;
+            sfxSource.volume = 0.5f;
+            sfxSource.clip = deathSound;
+            sfxSource.Play();
+        }
+        else if (!deathController.isDead && dead) {
+            dead = false;
+            audioSource.volume = 0.65f;
+            sfxSource.volume = 0.5f;
+            sfxSource.clip = reviveSound;
+            sfxSource.Play ();
+        }
         return !deathController.isDead;
     }
 
@@ -113,6 +143,9 @@ public class Controls : MonoBehaviour {
     IEnumerator DashEvent()
 	{
         Debug.Log ("DASHING");
+        sfxSource.clip = dashSound;
+        sfxSource.Play ();
+        sfxSource.volume = 0.5f;
         anim.SetBool ("roll", true);
         Dash = transform.forward * 30; //fix this later
         rb.AddForce(Dash, ForceMode.Impulse);
@@ -123,6 +156,17 @@ public class Controls : MonoBehaviour {
         yield return new WaitForSeconds (dashCooldown / 2);
         Debug.Log ("Dash ready");
         waitActive = false;
+    }
+
+    IEnumerator steppingSoundEvent () {
+        steppingSound = true;
+        Debug.Log ("Stepping");
+        sfxSource.clip = stepSound;
+        sfxSource.volume = 0.1f;
+        sfxSource.Play ();
+
+        yield return new WaitForSeconds (0.3f);
+        steppingSound = false;
     }
 }
 

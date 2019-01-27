@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour {
 
     public GameObject PauseUI;
 
+    public AudioSource sfxSource;
+    public AudioClip winning;
+
 	// Use this for initialization
 	void Start () {
         isPaused = false;	
@@ -51,6 +54,10 @@ public class GameManager : MonoBehaviour {
         Debug.Log ("PLAYER DIED " + playersAlive);
         if (playersAlive == 0) {
             //END GAME
+            sfxSource.clip = winning;
+            sfxSource.loop = false;
+            sfxSource.Play ();
+
             Debug.Log ("SHARK WINS");
             Time.timeScale = 0;
         }
