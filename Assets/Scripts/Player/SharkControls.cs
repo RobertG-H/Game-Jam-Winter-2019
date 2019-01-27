@@ -26,6 +26,13 @@ public class SharkControls : MonoBehaviour
 
     private Animator anim;
 
+    public AudioSource sfxSource;
+    public AudioClip deathSound;
+    public AudioClip stepSound;
+    public AudioClip biteSound;
+    public AudioClip burpSound;
+    public bool steppingSound = false;
+
 
     Collider col;
     public float biteCooldown = 2.0f;
@@ -65,6 +72,9 @@ public class SharkControls : MonoBehaviour
             }
             transform.Translate (new Vector3 (0, 0, vertical));
             anim.SetFloat ("speedPercent", movementSpeed);
+            if (!steppingSound) {
+                StartCoroutine (steppingSoundEvent ());
+            }
         }
         else if (vertical < -0.1f) {
             transform.Translate (new Vector3 (0, 0, vertical));
@@ -112,10 +122,18 @@ public class SharkControls : MonoBehaviour
 		if ( collision.gameObject.tag == "SmallFish" && !canBite ) {
             // death event
             collision.gameObject.GetComponent<DeathController> ().die ();
+            sfxSource.clip = burpSound;
+            sfxSource.pitch = 1f;
+            sfxSource.volume = 0.4f;
+            sfxSource.PlayDelayed (0.7f);
             Debug.Log("kilt him");
 		}
 	}
     IEnumerator bite(){
+        sfxSource.clip = biteSound;
+        sfxSource.pitch = 1f;
+        sfxSource.volume = 0.2f;
+        sfxSource.Play ();
         anim.SetBool("bite", true);
         canBite = false;
         Debug.Log("false canbite");
@@ -139,5 +157,18 @@ public class SharkControls : MonoBehaviour
         //anim.SetBool ("jump", false);
         grounded = true;
         yield return new WaitForSeconds (0.0f);
+    }
+
+    IEnumerator steppingSoundEvent () {
+        steppingSound = true;
+        Debug.Log ("Stepping");
+        sfxSource.clip = stepSound;
+        sfxSource.pitch = 0.64f;
+        sfxSource.volume = 0.08f;
+        sfxSource.Play ();
+
+        Debug.Log (0.8f - movementSpeed / 60);
+        yield return new WaitForSeconds (0.8f-movementSpeed/100);
+        steppingSound = false;
     }
 }

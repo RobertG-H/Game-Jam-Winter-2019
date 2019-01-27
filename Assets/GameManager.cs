@@ -14,8 +14,12 @@ public class GameManager : MonoBehaviour {
 
     public GameObject PauseUI;
 
-	// Use this for initialization
-	void Start () {
+    public AudioSource sfxSource;
+    public AudioClip winning;
+    public AudioClip winningPlayers;
+
+    // Use this for initialization
+    void Start () {
         isPaused = false;	
 	}
 
@@ -51,6 +55,10 @@ public class GameManager : MonoBehaviour {
         Debug.Log ("PLAYER DIED " + playersAlive);
         if (playersAlive == 0) {
             //END GAME
+            sfxSource.clip = winning;
+            sfxSource.loop = false;
+            sfxSource.Play ();
+
             Debug.Log ("SHARK WINS");
             Time.timeScale = 0;
         }
@@ -58,5 +66,18 @@ public class GameManager : MonoBehaviour {
 
     public void playerRevived() {
         playersAlive++;
+    }
+
+    public void playerWin() {
+        if (playersAlive > 1) {
+            //END GAME
+            sfxSource.clip = winningPlayers;
+            sfxSource.loop = false;
+            sfxSource.Play ();
+
+            Debug.Log ("Seaples WIN");
+            Time.timeScale = 0;
+            playersAlive = -5;
+        }
     }
 }
