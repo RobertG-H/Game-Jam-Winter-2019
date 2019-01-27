@@ -13,7 +13,7 @@ public class Controls : MonoBehaviour {
 	public float dashCooldown = 1.5f;
 
     private bool grounded = true;
-	private bool biting = false;
+	public bool biting = false;
 
     private Vector3 Dash;
     private bool blocked = false;
@@ -29,15 +29,22 @@ public class Controls : MonoBehaviour {
         transform.Rotate(0, horizontal, 0);
 
         float vertical = Input.GetAxis("Vertical" + playerNumber.ToString()) * movementSpeed * Time.deltaTime;
-        if ( Input.GetKey(KeyCode.W) ) {
+        Debug.Log (vertical);
+
+        if ( vertical>0.1f ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
             }
-            transform.Translate(new Vector3(0, 0, vertical)); 
-        } else if ( Input.GetKey(KeyCode.S) ) {
-            transform.Translate(new Vector3(0,0, vertical));
+            Debug.Log ("FORWARD " + movementSpeed);
+            transform.Translate(new Vector3(0, 0, vertical));
+            anim.SetFloat ("speedPercent", 10f);
         }
-        if ( Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S) ){
+        else if (vertical < -0.1f) {
+            transform.Translate(new Vector3(0,0, vertical));
+            anim.SetFloat ("speedPercent", 10f);
+        }
+        else {
+            anim.SetFloat ("speedPercent", 0f);
             movementSpeed = startSpeed;
         }
 

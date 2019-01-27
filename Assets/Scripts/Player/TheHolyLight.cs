@@ -39,6 +39,7 @@ public class TheHolyLight : MonoBehaviour
     public void grow() {
         if (transform.localScale.x < targetScale) {
             float newScale = Time.deltaTime * growSpeed;
+
             transform.localScale += new Vector3 (newScale, newScale, newScale);
         }
     }
