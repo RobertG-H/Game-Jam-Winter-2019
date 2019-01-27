@@ -10,12 +10,13 @@ public class Controls : MonoBehaviour {
 	public float turningSpeed = 200;
 	public Rigidbody rb;
 	public int playerNumber;
-	public float impulsePower = 25;
+	public float impulsePower = 15;
 	public float biteCooldown = 1.0f;
 	public float dashCooldown = 1.5f;
+	public CapsuleCollider biteCollider;
 
     private bool grounded = true;
-	private bool biting = false;
+	public bool biting = false;
 
     private Vector3 Dash;
 	private Vector3 Bite;
@@ -23,6 +24,7 @@ public class Controls : MonoBehaviour {
     private bool waitActive = false;
     void Start() {
         movementSpeed = startSpeed;
+		biteCollider = GetComponent<CapsuleCollider>();
     }
     void Update() {
 		int playerNum = (int)playerNumber - 1;
@@ -73,13 +75,8 @@ public class Controls : MonoBehaviour {
             grounded = true;
         }
     }
-	
-	void OnCollisionEnter(Collision col) {
-		if ( col.gameObject.tag == "SmallFish" && biting) {
-			biting = false; // death event
-		}
-	}
-    IEnumerator DashEvent()
+		
+	IEnumerator DashEvent()
 	{
         Dash = transform.forward;
         Dash = impulsePower * Dash;
