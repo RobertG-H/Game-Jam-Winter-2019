@@ -524,9 +524,9 @@ GameObject:
   m_Component:
   - component: {fileID: 81336448910771650}
   - component: {fileID: 81336448910771649}
-  - component: {fileID: 81336448910771651}
   - component: {fileID: 1199204707}
   - component: {fileID: 1199204708}
+  - component: {fileID: 1458693583}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -590,19 +590,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &81336448910771651
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81336448910771661}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d848f7f5e2434a6e9081bbdf9a73b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 81336448092175547}
 --- !u!114 &1199204707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,6 +667,20 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &1458693583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81336448910771661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f30ab1152749405a8e38b1b303ede73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 81336448092175547}
+  rotateSpeed: 3
 --- !u!1 &81336448923360052
 GameObject:
   m_ObjectHideFlags: 0
