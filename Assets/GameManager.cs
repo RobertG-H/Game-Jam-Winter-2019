@@ -16,9 +16,10 @@ public class GameManager : MonoBehaviour {
 
     public AudioSource sfxSource;
     public AudioClip winning;
+    public AudioClip winningPlayers;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         isPaused = false;	
 	}
 
@@ -65,5 +66,18 @@ public class GameManager : MonoBehaviour {
 
     public void playerRevived() {
         playersAlive++;
+    }
+
+    public void playerWin() {
+        if (playersAlive > 1) {
+            //END GAME
+            sfxSource.clip = winningPlayers;
+            sfxSource.loop = false;
+            sfxSource.Play ();
+
+            Debug.Log ("Seaples WIN");
+            Time.timeScale = 0;
+            playersAlive = -5;
+        }
     }
 }
