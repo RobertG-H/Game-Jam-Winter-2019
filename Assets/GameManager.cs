@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour {
             Restart();
         }
 
-        if (gameOver && Input.anyKey) {
+        if (gameOver && Input.GetKeyDown ("r")) {
             Time.timeScale = 1;
             Restart();
         }
