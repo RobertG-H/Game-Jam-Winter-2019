@@ -12,6 +12,8 @@ public class DeathController : MonoBehaviour
 
     private DeathProgress deathProgress;
 
+    public GameManager gm;
+
     void Start()
     {
         deathProgress =  GetComponentInChildren<DeathProgress>();
@@ -23,8 +25,11 @@ public class DeathController : MonoBehaviour
         if (isDead && isNearAlivePlayer())
         {
             revivePercent += Time.deltaTime * 100 / REVIVE_TIME;
-            if (revivePercent >= 100)
+            if (revivePercent >= 100) {
                 isDead = false;
+                gm.playerRevived ();
+            }
+                
         }
         else
         {
@@ -39,9 +44,18 @@ public class DeathController : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
         for (int i = 0; i < hitColliders.Length; i++)
         {
-            if (hitColliders[i].tag == "Player" && !hitColliders[i].GetComponent<DeathController>().isDead)
+            if (hitColliders[i].tag == "SmallFish" && !hitColliders[i].GetComponent<DeathController>().isDead)
                 return true;
         }
         return false;
+    }
+
+    public void die () 
+    {
+        if (!isDead) {
+            isDead = true;
+            gm.playerDied ();
+            //animation
+        }
     }
 }

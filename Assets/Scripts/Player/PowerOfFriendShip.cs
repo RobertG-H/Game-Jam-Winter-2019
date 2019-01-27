@@ -58,9 +58,9 @@ public class PowerOfFriendShip : MonoBehaviour
         else if (totalPlayersInRadius >= reqPlayersToPower - 1) {
             // First time entering slight poweroffriendship
             if(!slightFriendship) {
-                GameObject cylinder = Instantiate (lightCylinder, new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), Quaternion.identity) as GameObject;
-                cylinder.transform.parent = gameObject.transform;
-                cylinder.gameObject.GetComponent<TheHolyLight> ().setSlightPower ();
+                //GameObject cylinder = Instantiate (lightCylinder, new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, gameObject.transform.position.z), Quaternion.identity) as GameObject;
+                //cylinder.transform.parent = gameObject.transform;
+                //cylinder.gameObject.GetComponent<TheHolyLight> ().setSlightPower ();
             }
             // Add PowerOfFriendShip
             Debug.Log ("Slight PowerOfFriendShip!!!!");

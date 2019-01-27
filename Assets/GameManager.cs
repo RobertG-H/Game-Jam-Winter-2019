@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour {
 
     bool isPaused;
 
+    int playersAlive = 3;
+
     public GameObject PauseUI;
 
 	// Use this for initialization
@@ -29,7 +31,7 @@ public class GameManager : MonoBehaviour {
     public void TogglePause() {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
-        PauseUI.SetActive(isPaused);
+        //PauseUI.SetActive(isPaused);
     }
 
     public void Restart() {
@@ -42,5 +44,19 @@ public class GameManager : MonoBehaviour {
     public void MainMenu() {
         Time.timeScale = 1f;
         SceneManager.LoadScene(MainMenuScene);
+    }
+
+    public void playerDied() {
+        playersAlive--;
+        Debug.Log ("PLAYER DIED " + playersAlive);
+        if (playersAlive == 0) {
+            //END GAME
+            Debug.Log ("SHARK WINS");
+            Time.timeScale = 0;
+        }
+    }
+
+    public void playerRevived() {
+        playersAlive++;
     }
 }

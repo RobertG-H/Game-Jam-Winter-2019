@@ -19,23 +19,32 @@ public class Controls : MonoBehaviour {
     private bool blocked = false;
     private bool waitActive = false;
 
+    private DeathController deathController;
+
     private Animator anim;
     void Start() {
         movementSpeed = startSpeed;
         anim = GetComponent<Animator>();
+
+        if(gameObject.tag == "SmallFish") {
+            deathController = GetComponent<DeathController> ();
+        }
     }
     void Update() {
+
         float horizontal = Input.GetAxis("Horizontal" + playerNumber.ToString()) * turningSpeed * Time.deltaTime;
         transform.Rotate(0, horizontal, 0);
 
+        if (!canMove()) {
+            return;
+        }
+
         float vertical = Input.GetAxis("Vertical" + playerNumber.ToString()) * movementSpeed * Time.deltaTime;
-        Debug.Log (vertical);
 
         if ( vertical>0.1f ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
             }
-            Debug.Log ("FORWARD " + movementSpeed);
             transform.Translate(new Vector3(0, 0, vertical));
             anim.SetFloat ("speedPercent", 10f);
         }
@@ -67,6 +76,14 @@ public class Controls : MonoBehaviour {
 		}
         
     }   
+
+    bool canMove() {
+        if(gameObject.tag != "SmallFish") {
+            return true;
+        }
+        return !deathController.isDead;
+    }
+
     void OnCollisionExit(Collision col ) {
         if ( col.gameObject.tag == "Land" ) {
             grounded = false;
@@ -99,6 +116,8 @@ public class Controls : MonoBehaviour {
 		waitActive = false;
 
 	}
+
+
 
 }
 

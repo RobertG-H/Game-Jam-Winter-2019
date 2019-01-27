@@ -54,7 +54,8 @@ public class SharkControls : MonoBehaviour
     void OnCollisionEnter(Collision collision) {
         Debug.Log(collision.gameObject);
 		if ( collision.gameObject.tag == "SmallFish" && !canBite ) {
-			// death event
+            // death event
+            collision.gameObject.GetComponent<DeathController> ().die ();
             Debug.Log("kilt him");
 		}
 	}
