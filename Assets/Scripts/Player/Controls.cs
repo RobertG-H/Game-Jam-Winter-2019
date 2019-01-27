@@ -10,16 +10,12 @@ public class Controls : MonoBehaviour {
 	public float turningSpeed = 200;
 	public Rigidbody rb;
 	public int playerNumber;
-	public float impulsePower = 15;
-	public float biteCooldown = 1.0f;
 	public float dashCooldown = 1.5f;
-	public CapsuleCollider biteCollider;
 
     private bool grounded = true;
-	public bool biting = false;
+	private bool biting = false;
 
     private Vector3 Dash;
-	private Vector3 Bite;
     private bool blocked = false;
     private bool waitActive = false;
 
@@ -27,14 +23,12 @@ public class Controls : MonoBehaviour {
     void Start() {
         movementSpeed = startSpeed;
         anim = GetComponent<Animator>();
-		    biteCollider = GetComponent<CapsuleCollider>();
     }
     void Update() {
-		int playerNum = (int)playerNumber - 1;
-        float horizontal = Input.GetAxis("Horizontal" + playerNum.ToString()) * turningSpeed * Time.deltaTime;
+        float horizontal = Input.GetAxis("Horizontal" + playerNumber.ToString()) * turningSpeed * Time.deltaTime;
         transform.Rotate(0, horizontal, 0);
 
-        float vertical = Input.GetAxis("Vertical" + playerNum.ToString()) * movementSpeed * Time.deltaTime;
+        float vertical = Input.GetAxis("Vertical" + playerNumber.ToString()) * movementSpeed * Time.deltaTime;
         if ( Input.GetKey(KeyCode.W) ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
@@ -55,14 +49,12 @@ public class Controls : MonoBehaviour {
             }
         }
 
-        bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
+        //fix this later
+        bool fire = Input.GetButtonDown("Fire" + playerNumber.ToString());
 		if (fire) {
 			if (!waitActive) {
-				if (playerNum != 0) {
+				if (playerNumber != 0) {
 					StartCoroutine(DashEvent());
-				}
-				else {
-					StartCoroutine(BiteEvent());
 				}
 			}
 		}
@@ -78,12 +70,7 @@ public class Controls : MonoBehaviour {
             StartCoroutine(land());
         }
     }
-  
-	void OnCollisionEnter(Collision col) {
-		if ( col.gameObject.tag == "SmallFish" && biting) {
-			biting = false; // death event
-		}
-	}
+	
     IEnumerator jump() {
         anim.SetBool("jump", true);
         yield return new WaitForSeconds(0.5f);
@@ -98,27 +85,13 @@ public class Controls : MonoBehaviour {
 
     IEnumerator DashEvent()
 	{
-        Dash = transform.forward;
-        Dash = impulsePower * Dash;
+        Dash = transform.forward * 25; //fix this later
         rb.AddForce(Dash, ForceMode.Impulse);
 		waitActive = true;
 		yield return new WaitForSeconds(dashCooldown);
 		waitActive = false;
 
 	}
-	
-	IEnumerator BiteEvent()
-	{
-        Bite = transform.forward;
-        Bite = impulsePower * Bite;
-        rb.AddForce(Bite, ForceMode.Impulse);
-		waitActive = true;
-		biting = true;
-		movementSpeed = 0;
-		yield return new WaitForSeconds(biteCooldown);
-		waitActive = false;
-		biting = false;
-		movementSpeed = startSpeed;
-	}
+
 }
 
