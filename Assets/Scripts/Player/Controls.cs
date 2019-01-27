@@ -50,6 +50,7 @@ public class Controls : MonoBehaviour {
 
         float horizontal = Input.GetAxis("Horizontal" + playerNumber.ToString()) * turningSpeed * Time.deltaTime;
         transform.Rotate(0, horizontal, 0);
+        transform.GetChild (2).gameObject.transform.Rotate (0, -horizontal, 0);
 
         if (!canMove()) {
             return;
@@ -160,7 +161,6 @@ public class Controls : MonoBehaviour {
 
     IEnumerator steppingSoundEvent () {
         steppingSound = true;
-        Debug.Log ("Stepping");
         sfxSource.clip = stepSound;
         sfxSource.volume = 0.3f;
         sfxSource.Play ();
