@@ -262,6 +262,8 @@ GameObject:
   - component: {fileID: 81336448774294135}
   - component: {fileID: 81336448774294134}
   - component: {fileID: 81336448774294128}
+  - component: {fileID: 1421720351}
+  - component: {fileID: 2292932213385000648}
   m_Layer: 0
   m_Name: shark-complete
   m_TagString: Untagged
@@ -332,10 +334,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 1.549942
-  m_Height: 3.3891754
-  m_Direction: 1
-  m_Center: {x: -0.016143799, y: 4.3080215, z: 0.5643463}
+  m_Radius: 2.33
+  m_Height: 6.33
+  m_Direction: 2
+  m_Center: {x: -0.016143799, y: 4.88, z: 0.66}
 --- !u!114 &81336448774294134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,6 +359,12 @@ MonoBehaviour:
   playerNumber: 0
   dashCooldown: 1.5
   biting: 0
+  sfxSource: {fileID: 2292932213385000648}
+  deathSound: {fileID: 8300000, guid: a9edbaf9dc643d5468cbb7aa7fcf36c6, type: 3}
+  stepSound: {fileID: 8300000, guid: 1e71b96dd3a1af44fba63ce957c11100, type: 3}
+  biteSound: {fileID: 8300000, guid: 727208c2514dffa498a3ee23a788b49f, type: 3}
+  burpSound: {fileID: 8300000, guid: bc43b67e0e983b248818be9c4218a441, type: 3}
+  steppingSound: 0
   biteCooldown: 1
   bitePower: 25
   canBite: 1
@@ -373,6 +381,110 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 81336448774294132}
+--- !u!81 &1421720351
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81336448774294130}
+  m_Enabled: 1
+--- !u!82 &2292932213385000648
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81336448774294130}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.174
+  m_Pitch: 0.64
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 221
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &81336448783839260
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +525,6 @@ GameObject:
   m_Component:
   - component: {fileID: 81336448910771650}
   - component: {fileID: 81336448910771649}
-  - component: {fileID: 81336448910771648}
   - component: {fileID: 81336448910771651}
   - component: {fileID: 1199204707}
   - component: {fileID: 1199204708}
@@ -480,14 +591,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &81336448910771648
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 81336448910771661}
-  m_Enabled: 1
 --- !u!114 &81336448910771651
 MonoBehaviour:
   m_ObjectHideFlags: 0
