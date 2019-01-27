@@ -8,6 +8,11 @@ public class MainMenuManager : MonoBehaviour {
     [SerializeField]
     private string sceneToLoad;
 
+    void Update() {
+        if (Input.anyKey)
+            StartGame();
+    }
+
     // Called by start game button
     public void StartGame () {
         StartCoroutine(StartGameDelay());  

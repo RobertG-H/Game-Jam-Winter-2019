@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class StartGameWord : MonoBehaviour
 {
-    public float yMax;
-    public float yMin;
+    private float yMax;
+    private float yMin;
+    public float range;
     public float ySpeed;
     private bool movingUp = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+        yMax = transform.localPosition.y + range;
+        yMin = transform.localPosition.y - range;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log (transform.position.y);
-        if (transform.position.y > yMax) {
+        if (transform.localPosition.y > yMax) {
             movingUp = false;
         }
-        else if (transform.position.y < yMin) {
+        else if (transform.localPosition.y < yMin) {
             movingUp = true;
         }
         if (movingUp) {
