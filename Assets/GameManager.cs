@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
     public void TogglePause() {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
-        //PauseUI.SetActive(isPaused);
+        PauseUI.SetActive(isPaused);
     }
 
     public void Restart() {
