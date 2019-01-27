@@ -6,10 +6,12 @@ public class FishControls : MonoBehaviour
 {
 
     public Animator anim;
+    public Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -18,8 +20,12 @@ public class FishControls : MonoBehaviour
         
         if ( Input.GetKeyDown(KeyCode.Space) ) {
             StartCoroutine(roll());
-        } else if ( Input.GetKeyDown(KeyCode.V) ) {
-            StartCoroutine(jump());
+        } else if ( Input.GetKeyDown(KeyCode.W) ) {
+            StartCoroutine(running("start"));
+        }
+
+        if ( Input.GetKeyUp(KeyCode.W) ) {
+            StartCoroutine(running("stop"));
         }
     }
     IEnumerator roll() {
@@ -27,11 +33,16 @@ public class FishControls : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         anim.SetBool("roll", false);
     }
-    
-    IEnumerator jump() {
-        anim.SetBool("jump", true);
-        yield return new WaitForSeconds(1.0f);
-        anim.SetBool("jump", false);
+    IEnumerator running(string s) {
+
+        if ( s == "start" ) {
+            anim.SetFloat("speedPercent", 10f);
+            yield return new WaitForSeconds(0.0f);
+        } else if ( s == "stop" ) {
+            anim.SetFloat("speedPercent", 0.0f);
+            yield return new WaitForSeconds(0.0f);
+        }
+        
     }
 
 }

@@ -22,9 +22,12 @@ public class Controls : MonoBehaviour {
 	private Vector3 Bite;
     private bool blocked = false;
     private bool waitActive = false;
+
+    private Animator anim;
     void Start() {
         movementSpeed = startSpeed;
-		biteCollider = GetComponent<CapsuleCollider>();
+        anim = GetComponent<Animator>();
+		    biteCollider = GetComponent<CapsuleCollider>();
     }
     void Update() {
 		int playerNum = (int)playerNumber - 1;
@@ -46,7 +49,7 @@ public class Controls : MonoBehaviour {
 
         if ( Input.GetKeyDown(KeyCode.V) && grounded ) {
             if ( rb.velocity.x == 0 )
-                rb.AddForce(new Vector3(0,10,0), ForceMode.Impulse);
+                StartCoroutine(jump());
             else {
                 rb.AddForce(new Vector3(0,12,1), ForceMode.Impulse);
             }
@@ -72,11 +75,28 @@ public class Controls : MonoBehaviour {
     }
     void OnCollisionStay(Collision col){
         if ( col.gameObject.tag == "Land" ) {
-            grounded = true;
+            StartCoroutine(land());
         }
     }
-		
-	IEnumerator DashEvent()
+  
+	void OnCollisionEnter(Collision col) {
+		if ( col.gameObject.tag == "SmallFish" && biting) {
+			biting = false; // death event
+		}
+	}
+    IEnumerator jump() {
+        anim.SetBool("jump", true);
+        yield return new WaitForSeconds(0.5f);
+        rb.AddForce(new Vector3(0,10,0), ForceMode.Impulse);
+    }
+
+    IEnumerator land(){
+        anim.SetBool("jump", false);
+        grounded = true;
+        yield return new WaitForSeconds(0.0f);
+    }
+
+    IEnumerator DashEvent()
 	{
         Dash = transform.forward;
         Dash = impulsePower * Dash;
