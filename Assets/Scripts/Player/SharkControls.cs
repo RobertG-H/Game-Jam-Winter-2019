@@ -48,6 +48,7 @@ public class SharkControls : MonoBehaviour
 
         float horizontal = Input.GetAxis ("Horizontal" + playerNumber.ToString ()) * turningSpeed * Time.deltaTime;
         transform.Rotate (0, horizontal, 0);
+        transform.GetChild(2).gameObject.transform.Rotate(0, -horizontal, 0);
 
         if (!canBite) {
             return;
