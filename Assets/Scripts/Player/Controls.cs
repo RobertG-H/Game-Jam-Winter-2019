@@ -162,7 +162,7 @@ public class Controls : MonoBehaviour {
         steppingSound = true;
         Debug.Log ("Stepping");
         sfxSource.clip = stepSound;
-        sfxSource.volume = 0.1f;
+        sfxSource.volume = 0.3f;
         sfxSource.Play ();
 
         yield return new WaitForSeconds (0.3f);
