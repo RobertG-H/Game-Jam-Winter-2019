@@ -9,6 +9,7 @@ public class Controls : MonoBehaviour {
     public float acceleration = 0.1f;
 	public float turningSpeed = 200;
 	public Rigidbody rb;
+
 	public int playerNumber;
 	public float dashCooldown = 1.5f;
 
@@ -25,6 +26,8 @@ public class Controls : MonoBehaviour {
     void Start() {
         movementSpeed = startSpeed;
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody> ();
+        
 
         if(gameObject.tag == "SmallFish") {
             deathController = GetComponent<DeathController> ();
@@ -40,17 +43,16 @@ public class Controls : MonoBehaviour {
         }
 
         float vertical = Input.GetAxis("Vertical" + playerNumber.ToString()) * movementSpeed * Time.deltaTime;
-
-        if ( vertical>0.1f ) {
+        if ( vertical > 0.1f ) {
             if ( movementSpeed < MAX_SPEED ) {
                 movementSpeed += acceleration;
             }
             transform.Translate(new Vector3(0, 0, vertical));
-            anim.SetFloat ("speedPercent", 10f);
+            anim.SetFloat ("speedPercent", vertical*10f);
         }
         else if (vertical < -0.1f) {
             transform.Translate(new Vector3(0,0, vertical));
-            anim.SetFloat ("speedPercent", 10f);
+            anim.SetFloat ("speedPercent", vertical*10f);
         }
         else {
             anim.SetFloat ("speedPercent", 0f);
@@ -74,13 +76,13 @@ public class Controls : MonoBehaviour {
 				}
 			}
 		}
-        
     }   
 
     bool canMove() {
         if(gameObject.tag != "SmallFish") {
             return true;
         }
+        anim.SetBool ("dead", deathController.isDead);  
         return !deathController.isDead;
     }
 
@@ -89,6 +91,7 @@ public class Controls : MonoBehaviour {
             grounded = false;
         }
     }
+
     void OnCollisionStay(Collision col){
         if ( col.gameObject.tag == "Land" ) {
             StartCoroutine(land());
@@ -109,15 +112,17 @@ public class Controls : MonoBehaviour {
 
     IEnumerator DashEvent()
 	{
-        Dash = transform.forward * 25; //fix this later
+        Debug.Log ("DASHING");
+        anim.SetBool ("roll", true);
+        Dash = transform.forward * 30; //fix this later
         rb.AddForce(Dash, ForceMode.Impulse);
 		waitActive = true;
-		yield return new WaitForSeconds(dashCooldown);
-		waitActive = false;
-
-	}
-
-
-
+		yield return new WaitForSeconds(dashCooldown / 2);
+        Debug.Log ("Animation dash complete");
+        anim.SetBool ("roll", false);
+        yield return new WaitForSeconds (dashCooldown / 2);
+        Debug.Log ("Dash ready");
+        waitActive = false;
+    }
 }
 

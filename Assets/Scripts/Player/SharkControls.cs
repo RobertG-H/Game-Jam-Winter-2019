@@ -5,54 +5,109 @@ using UnityEngine;
 public class SharkControls : MonoBehaviour
 {
 
-    Animator anim;
-    Rigidbody rb;
+    public float startSpeed;
+    public float movementSpeed;
+    public float MAX_SPEED;
+    public float acceleration;
+    public float turningSpeed = 200;
+    public Rigidbody rb;
+
+    public int playerNumber;
+    public float dashCooldown = 1.5f;
+
+    private bool grounded = true;
+    public bool biting = false;
+
+    private Vector3 Dash;
+    private bool blocked = false;
+    private bool waitActive = false;
+
+    private DeathController deathController;
+
+    private Animator anim;
+
+
     Collider col;
     public float biteCooldown = 2.0f;
-    
-	private float impulsePower = 25;
 
-    int playerNum = 0;
-    bool canBite = true;
-    // Start is called before the first frame update
-    void Start()
-    {
-        anim = GetComponent<Animator>();
-        rb   = GetComponent<Rigidbody>();
-        col  = GetComponent<CapsuleCollider>();
+    public float bitePower = 50;
+    public bool canBite = true;
+    void Start () {
+        movementSpeed = startSpeed;
+        anim = GetComponent<Animator> ();
+        rb = GetComponent<Rigidbody> ();
+
+        if (gameObject.tag == "SmallFish") {
+            deathController = GetComponent<DeathController> ();
+        }
+        col = GetComponent<CapsuleCollider> ();
     }
+    void Update () {
 
-    // Update is called once per frame
-    void Update()
-    {
-        bool fire = Input.GetButtonDown("Fire" + playerNum.ToString());
-        if ( Input.GetKeyDown(KeyCode.W) ) {
-            StartCoroutine(running("start"));
-        } else if (fire && canBite ) {
-            Debug.Log("Biting");
-            StartCoroutine(bite());
+
+
+        float horizontal = Input.GetAxis ("Horizontal" + playerNumber.ToString ()) * turningSpeed * Time.deltaTime;
+        transform.Rotate (0, horizontal, 0);
+
+        if (!canBite) {
+            return;
         }
 
-        if ( Input.GetKeyUp(KeyCode.W) ) {
-            StartCoroutine(running("stop"));
-        } 
-    }
-
-    IEnumerator running(string s) {
-
-        if ( s == "start" ) {
-            anim.SetFloat("speedPercent", 10f);
-            yield return new WaitForSeconds(0.0f);
-        } else if ( s == "stop" ) {
-            anim.SetFloat("speedPercent", 0.0f);
-            yield return new WaitForSeconds(0.0f);
-        } else {
-            yield return new WaitForSeconds(0.0f);
+        if (!canMove ()) {
+            return;
         }
-        
+
+        float vertical = Input.GetAxis ("Vertical" + playerNumber.ToString ()) * movementSpeed * Time.deltaTime;
+        if (vertical > 0.1f) {
+            if (movementSpeed < MAX_SPEED) {
+                movementSpeed += acceleration;
+            }
+            transform.Translate (new Vector3 (0, 0, vertical));
+            anim.SetFloat ("speedPercent", movementSpeed);
+        }
+        else if (vertical < -0.1f) {
+            transform.Translate (new Vector3 (0, 0, vertical));
+            anim.SetFloat ("speedPercent", movementSpeed);
+        }
+        else {
+            anim.SetFloat ("speedPercent", 0f);
+            movementSpeed = startSpeed;
+        }
+
+        if (Input.GetKeyDown (KeyCode.V) && grounded) {
+            if (rb.velocity.x == 0)
+                StartCoroutine (jump ());
+            else {
+                rb.AddForce (new Vector3 (0, 12, 1), ForceMode.Impulse);
+            }
+        }
+        bool fire = Input.GetButtonDown ("Fire" + playerNumber.ToString ());
+        if (fire && canBite) {
+            Debug.Log ("Biting");
+            StartCoroutine (bite ());
+        }
     }
+
+    bool canMove () {
+        if (gameObject.tag != "SmallFish") {
+            return true;
+        }
+        return !deathController.isDead;
+    }
+
+    void OnCollisionExit (Collision col) {
+        if (col.gameObject.tag == "Land") {
+            grounded = false;
+        }
+    }
+
+    void OnCollisionStay (Collision col) {
+        if (col.gameObject.tag == "Land") {
+            StartCoroutine (land ());
+        }
+    }
+
     void OnCollisionEnter(Collision collision) {
-        Debug.Log(collision.gameObject);
 		if ( collision.gameObject.tag == "SmallFish" && !canBite ) {
             // death event
             collision.gameObject.GetComponent<DeathController> ().die ();
@@ -60,14 +115,28 @@ public class SharkControls : MonoBehaviour
 		}
 	}
     IEnumerator bite(){
-        anim.SetFloat("speedPercent", 60);
+        anim.SetBool("bite", true);
         canBite = false;
         Debug.Log("false canbite");
-        Vector3 Bite = transform.forward * impulsePower;
+        Vector3 Bite = transform.forward * bitePower;
         rb.AddForce(Bite, ForceMode.Impulse);
-		yield return new WaitForSeconds(biteCooldown);
-		canBite = true;
-        anim.SetFloat("speedPercent", 0);
+		yield return new WaitForSeconds(biteCooldown / 2);
+        anim.SetBool ("bite", false);
+        yield return new WaitForSeconds (biteCooldown / 2);
+        canBite = true;
         Debug.Log("true canbite");
+        movementSpeed = startSpeed;
+    }
+
+    IEnumerator jump () {
+        //anim.SetBool ("jump", true);
+        yield return new WaitForSeconds (0.5f);
+        rb.AddForce (new Vector3 (0, 10, 0), ForceMode.Impulse);
+    }
+
+    IEnumerator land () {
+        //anim.SetBool ("jump", false);
+        grounded = true;
+        yield return new WaitForSeconds (0.0f);
     }
 }
