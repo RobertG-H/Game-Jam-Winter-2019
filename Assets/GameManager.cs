@@ -18,8 +18,19 @@ public class GameManager : MonoBehaviour {
     public AudioClip winning;
     public AudioClip winningPlayers;
 
+    public GameObject seapleWin;
+    public GameObject sharkWin;
+    public GameObject pressKey;
+
+    bool gameOver = false;
+
     // Use this for initialization
     void Start () {
+        sharkWin.SetActive(false);
+        seapleWin.SetActive(false);
+        pressKey.SetActive(false);
+        gameOver = false;
+        
         isPaused = false;	
 	}
 
@@ -28,6 +39,11 @@ public class GameManager : MonoBehaviour {
             TogglePause();
         }
         else if (Input.GetKeyDown("r")) {
+            Restart();
+        }
+
+        if (gameOver && Input.anyKey) {
+            Time.timeScale = 1;
             Restart();
         }
 	}
@@ -52,14 +68,14 @@ public class GameManager : MonoBehaviour {
 
     public void playerDied() {
         playersAlive--;
-        Debug.Log ("PLAYER DIED " + playersAlive);
         if (playersAlive == 0) {
+            gameOver = true;
+            sharkWin.SetActive(true);
+            pressKey.SetActive(true);
             //END GAME
             sfxSource.clip = winning;
             sfxSource.loop = false;
             sfxSource.Play ();
-
-            Debug.Log ("SHARK WINS");
             Time.timeScale = 0;
         }
     }
@@ -70,12 +86,13 @@ public class GameManager : MonoBehaviour {
 
     public void playerWin() {
         if (playersAlive > 1) {
-            //END GAME
+            gameOver = true;
+            seapleWin.SetActive(true);
+            pressKey.SetActive(true);
             sfxSource.clip = winningPlayers;
             sfxSource.loop = false;
             sfxSource.Play ();
 
-            Debug.Log ("Seaples WIN");
             Time.timeScale = 0;
             playersAlive = -5;
         }
