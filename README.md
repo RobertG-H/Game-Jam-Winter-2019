@@ -14,6 +14,8 @@ Team Spaghetti Yeti's [Global Game Jam 2019 submission.](https://globalgamejam.o
 
 Home is where your family is. Family leads to power. Power leads to energy. Energy leads to killing a massive shark with two arms rippling with indomitable muscles. In “JAWG”, find your family and friends to reach power levels unachievable alone. Alternatively, destroy an aquatic home playing as a mockery of nature. Run. Fight. JAWG.
 
+## [Windows Builds (Controller and Keyboard versions available)](https://drive.google.com/drive/folders/1KJ8msoaZVM0paGBrnAJsBIMcVR2Ep_Ni?usp=sharing)
+
 ## Controls
 4 controllers recommended!
 
@@ -21,14 +23,22 @@ Home is where your family is. Family leads to power. Power leads to energy. Ener
 
 * `Left stick` to turn
 * `Right stick` to move camera
-*  `Right trigger` to accelerator 
+*  `Right trigger` si accelerator 
 * `A` to Dash or attack
 
 ### Keyboard controllers for 2 players
-*COMING SOON*
 
-##### Player 1
-##### Player 2
+##### Player 1 (Shark)
+* `A and D` to turn
+* `F and G` to move camera
+*  `W` is accelerator 
+* `Space` to attack
+
+##### Player 2 (Seaple 1)
+* `Left and Right Arrows` to turn
+* `K and L` to move camera
+*  `Up Arrow` is accelerator 
+
 
 ## Built With
 
