@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SharkControls : MonoBehaviour
 {
@@ -39,136 +40,193 @@ public class SharkControls : MonoBehaviour
 
     public float bitePower = 50;
     public bool canBite = true;
-    void Start () {
+
+    private float horizontal = 0;
+    private float vertical = 0;
+    void Start()
+    {
         movementSpeed = startSpeed;
-        anim = GetComponent<Animator> ();
-        rb = GetComponent<Rigidbody> ();
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
 
-        if (gameObject.tag == "SmallFish") {
-            deathController = GetComponent<DeathController> ();
+        if (gameObject.tag == "SmallFish")
+        {
+            deathController = GetComponent<DeathController>();
         }
-        col = GetComponent<CapsuleCollider> ();
+        col = GetComponent<CapsuleCollider>();
     }
-    void Update () {
+    void Update()
+    {
 
-
-
-        float horizontal = Input.GetAxis ("Horizontal" + playerNumber.ToString ()) * turningSpeed * Time.deltaTime;
-        transform.Rotate (0, horizontal, 0);
+        // float horizontal = Input.GetAxis("Horizontal" + playerNumber.ToString()) * turningSpeed * Time.deltaTime;
+        transform.Rotate(0, horizontal, 0);
         transform.GetChild(2).gameObject.transform.Rotate(0, -horizontal, 0);
 
-        if (!canBite) {
+        if (!canBite)
+        {
             return;
         }
 
-        if (!canMove ()) {
+        if (!canMove())
+        {
             return;
         }
 
-        float vertical = Input.GetAxis ("Vertical" + playerNumber.ToString ()) * movementSpeed * Time.deltaTime;
-        if (vertical > 0.1f) {
-            if (movementSpeed < MAX_SPEED) {
+        //float vertical = Input.GetAxis("Vertical" + playerNumber.ToString()) * movementSpeed * Time.deltaTime;
+        if (vertical > 0.1f)
+        {
+            if (movementSpeed < MAX_SPEED)
+            {
                 movementSpeed += acceleration;
             }
-            transform.Translate (new Vector3 (0, 0, vertical));
-            anim.SetFloat ("speedPercent", movementSpeed);
-            if (!steppingSound) {
-                StartCoroutine (steppingSoundEvent ());
+            transform.Translate(new Vector3(0, 0, vertical));
+            anim.SetFloat("speedPercent", movementSpeed);
+            if (!steppingSound)
+            {
+                StartCoroutine(steppingSoundEvent());
             }
         }
-        else if (vertical < -0.1f) {
-            transform.Translate (new Vector3 (0, 0, vertical));
-            anim.SetFloat ("speedPercent", movementSpeed);
+        else if (vertical < -0.1f)
+        {
+            transform.Translate(new Vector3(0, 0, vertical));
+            anim.SetFloat("speedPercent", movementSpeed);
         }
-        else {
-            anim.SetFloat ("speedPercent", 0f);
+        else
+        {
+            anim.SetFloat("speedPercent", 0f);
             movementSpeed = startSpeed;
         }
 
-        if (Input.GetKeyDown (KeyCode.V) && grounded) {
-            if (rb.velocity.x == 0)
-                StartCoroutine (jump ());
-            else {
-                rb.AddForce (new Vector3 (0, 12, 1), ForceMode.Impulse);
-            }
-        }
-        bool fire = Input.GetButtonDown ("Fire" + playerNumber.ToString ());
-        if (fire && canBite) {
-            Debug.Log ("Biting");
-            StartCoroutine (bite ());
+        // if (Input.GetKeyDown(KeyCode.V) && grounded)
+        // {
+        //     if (rb.velocity.x == 0)
+        //         StartCoroutine(jump());
+        //     else
+        //     {
+        //         rb.AddForce(new Vector3(0, 12, 1), ForceMode.Impulse);
+        //     }
+        // }
+
+        /*
+        bool fire = Input.GetButtonDown("Fire" + playerNumber.ToString());
+        if (fire && canBite)
+        {
+            Debug.Log("Biting");
+            StartCoroutine(bite());
+        }*/
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        Debug.Log("On Move");
+        vertical = context.ReadValue<float>() * movementSpeed * Time.deltaTime;
+        // bool input = context.ReadValue<bool>();
+        // Debug.Log(input);
+        // if (input)
+        //     vertical = 1.0f;
+        // else
+        //     vertical = 0f;
+    }
+
+
+    //InputAction.CallbackContext context
+    public void OnAction(InputAction.CallbackContext context)
+    {
+        Debug.Log("On Action");
+        if (canBite)
+        {
+            Debug.Log("Biting");
+            StartCoroutine(bite());
         }
     }
 
-    bool canMove () {
-        if (gameObject.tag != "SmallFish") {
+    public void OnTurn(InputAction.CallbackContext context)
+    {
+        horizontal = context.ReadValue<float>() * turningSpeed * Time.deltaTime;
+    }
+
+    bool canMove()
+    {
+        if (gameObject.tag != "SmallFish")
+        {
             return true;
         }
         return !deathController.isDead;
     }
 
-    void OnCollisionExit (Collision col) {
-        if (col.gameObject.tag == "Land") {
+    void OnCollisionExit(Collision col)
+    {
+        if (col.gameObject.tag == "Land")
+        {
             grounded = false;
         }
     }
 
-    void OnCollisionStay (Collision col) {
-        if (col.gameObject.tag == "Land") {
-            StartCoroutine (land ());
+    void OnCollisionStay(Collision col)
+    {
+        if (col.gameObject.tag == "Land")
+        {
+            StartCoroutine(land());
         }
     }
 
-    void OnCollisionEnter(Collision collision) {
-		if ( collision.gameObject.tag == "SmallFish" && !canBite ) {
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "SmallFish" && !canBite)
+        {
             // death event
-            collision.gameObject.GetComponent<DeathController> ().die ();
+            collision.gameObject.GetComponent<DeathController>().die();
             sfxSource.clip = burpSound;
             sfxSource.pitch = 1f;
             sfxSource.volume = 0.4f;
-            sfxSource.PlayDelayed (0.7f);
+            sfxSource.PlayDelayed(0.7f);
             Debug.Log("kilt him");
-		}
-	}
-    IEnumerator bite(){
+        }
+    }
+    IEnumerator bite()
+    {
         sfxSource.clip = biteSound;
         sfxSource.pitch = 1f;
         sfxSource.volume = 0.2f;
-        sfxSource.Play ();
+        sfxSource.Play();
         anim.SetBool("bite", true);
         canBite = false;
         Debug.Log("false canbite");
         Vector3 Bite = transform.forward * bitePower;
         rb.AddForce(Bite, ForceMode.Impulse);
-		yield return new WaitForSeconds(biteCooldown / 2);
-        anim.SetBool ("bite", false);
-        yield return new WaitForSeconds (biteCooldown / 2);
+        yield return new WaitForSeconds(biteCooldown / 4);
+        anim.SetBool("bite", false);
+        yield return new WaitForSeconds(biteCooldown / 2);
         canBite = true;
         Debug.Log("true canbite");
         movementSpeed = startSpeed;
     }
 
-    IEnumerator jump () {
+    IEnumerator jump()
+    {
         //anim.SetBool ("jump", true);
-        yield return new WaitForSeconds (0.5f);
-        rb.AddForce (new Vector3 (0, 10, 0), ForceMode.Impulse);
+        yield return new WaitForSeconds(0.5f);
+        rb.AddForce(new Vector3(0, 10, 0), ForceMode.Impulse);
     }
 
-    IEnumerator land () {
+    IEnumerator land()
+    {
         //anim.SetBool ("jump", false);
         grounded = true;
-        yield return new WaitForSeconds (0.0f);
+        yield return new WaitForSeconds(0.0f);
     }
 
-    IEnumerator steppingSoundEvent () {
+    IEnumerator steppingSoundEvent()
+    {
         steppingSound = true;
-        Debug.Log ("Stepping");
+        Debug.Log("Stepping");
         sfxSource.clip = stepSound;
         sfxSource.pitch = 0.64f;
         sfxSource.volume = 0.08f;
-        sfxSource.Play ();
+        sfxSource.Play();
 
-        Debug.Log (0.8f - movementSpeed / 60);
-        yield return new WaitForSeconds (0.8f-movementSpeed/100);
+        Debug.Log(0.8f - movementSpeed / 60);
+        yield return new WaitForSeconds(0.8f - movementSpeed / 100);
         steppingSound = false;
     }
 }
